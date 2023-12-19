@@ -1,0 +1,25 @@
+EXPORTS
+"_DllMain"="DllMain" 12
+"_Addint"="Addint" 4
+"_Hello"="Hello"
+"_Subint"="Subint" 4
+"_Multint"="Multint" 4
+"_Divint"="Divint" 4
+"_Squarint"="Squarint" 2
+"_Adddbl"="Adddbl" 8
+"_Subdbl"="Subdbl" 8
+"_Multdbl"="Multdbl" 8
+"_Divdbl"="Divdbl" 8
+"_Squardbl"="Squardbl" 4
+"DllMain" 6
+"Hello"
+"Addint" 4
+"Subint" 4
+"Multint" 4
+"Divint" 4
+"Squarint" 2
+"Adddbl" 8
+"Subdbl" 8
+"Multdbl" 8
+"Divdbl" 8
+"Squardbl" 4

@@ -1,0 +1,18 @@
+LIBRARY "dll_core.dll" PROCESSINIT PROCESSTERM
+EXETYPE   NT
+SUBSYSTEM WINDOWS
+CODE SHARED EXECUTE
+DATA WRITE
+EXPORTS
+_DllMain="DllMain" 12
+_Addint="Addint" 4
+_Hello="Hello"
+_Subint="Subint" 4
+_Multint="Multint" 4
+_Divint="Divint" 4
+_Squarint="Squarint" 2
+_Adddbl="Adddbl" 8
+_Subdbl="Subdbl" 8
+_Multdbl="Multdbl" 8
+_Divdbl="Divdbl" 8
+_Squardbl="Squardbl" 4
