@@ -14,13 +14,14 @@ REM 		32, 64 ou  ALL si vous souhaitez lancer les deux générations, 32 bits et
 REM 	Dans le cas du compilateur DMC, une seule génération possible : 32 bits, ce deuxième paramètre est donc ignoré.
 REM
 REM 	Author : 						Thierry DECHAIZE
-REM		Date creation/modification : 	19/11/2023
+REM		Date creation/modification : 	30/12/2023
 REM 	Reason of modifications : 	n° 1 - Add new test of DLL with same call, but with load of DLL implicit (indirect call of DLL) 
 REM 	 							n° 2 - After call in mode implicit of functions of DLL with préfix "_", add new definition file during genaration of DLL
 REM 	 							n° 3 - Offer choice to generate DLL + test programs in one pass or two passes (compilation first, and then linkage after)
 REM 								n° 4 - Change structure of multiple tests of first parameter to call internal functions in this script, and many others
-REM 										change into source files (to align printf... for example) and into def file.  
-REM 	Version number :				1.1.4            (version majeure . version mineure . patch level)
+REM 										change into source files (to align printf... for example) and into def file. 
+REM 								n° 5 - Corrections : option to generate lib file during linkage have good result. Unecessary to generate this file with tool "implib". YES !!! 
+REM 	Version number :				1.1.5            (version majeure . version mineure . patch level)
 
 echo.  Lancement du batch de generation d'une DLL et deux tests de celle-ci avec Digital Mars Compiler C/C++ 32 bits version 8.57
 REM     Affichage du nom du système d'exploitation Windows :              			Microsoft Windows 11 Famille (par exemple)
@@ -62,18 +63,18 @@ REM 	-mn 							-> set memory model to Windows 32s/95/98/NT/2000/ME/XP (mandator
 REM 	-WD								-> set generation to Windows DLL (mandatory, in evidence !!!)   (-WA to generate GUI Windows Application)
 REM 	-w-								-> set all warning of compiler
 REM 	-ooutput_file					-> set name of output file
-REM 	-L/IMPLIB:dll_core.lib 	 		-> advise linker to generate a library file, here dll_testing.lib
-REM 	-L/IMPDEF:dll_core_2.def  		-> advise linker to generate a def file, here dll_testing_2.def
+REM 	-L/IMPLIB:dll_core.lib 	 		-> advise linker to generate a library file, here dll_core.lib
+REM 	-L/IMPDEF:dll_core_2.def  		-> advise linker to generate a def file, here dll_core_2.def
 echo.  *********************************     Generation de la DLL en une passe       *******************************
-dmc src\dll_core.c -Ab -Bf -mn -WD -w- -DBUILD_DLL -odll_core.dll -L/IMPDEF:dll_core_2.def /IMPLIB:dll_core.lib kernel32.lib user32.lib src\dll_core.def
+dmc src\dll_core.c -Ab -Bf -mn -WD -w- -DBUILD_DLL -odll_core.dll -L/IMPDEF:dll_core_2.def -L/IMPLIB:dll_core.lib kernel32.lib user32.lib src\dll_core.def
 REM 	WARNING BEHAVIOUR ERRATIC OF COMPILER DMC : If you place an definition file with the same name of source file (like dll_testing.def) 
 REM 			on directory, dmc compiler read the information of this def file (implicit reading !!!) without warning or explicit advising !!!
 REM 			An error is generated if src\dll_core.def is present ... and this content don't match the exported symbols.
 REM 	See the result of generate def file by linker
+echo.  ***************** 	           Affichage du def file genere par le linker			    *****************
 type dll_core_2.def
-REM     Use of "implib" utility" because bug with precedent command during linkage : library generate "dll_core.lib" seems in wrong format !!!
-REM 	The message during next generation of main test program of DLL is : "dll_testing.lib : Error 30: Unexpected End of File"
-implib /system dll_core.lib dll_core.dll
+REM     NOT MANDATORY : Linker generate good library with command line -L/IMPLIB=xxxxxxxx.lib
+REM implib /system dll_core.lib dll_core.dll
 REM    Use of tool libunres to see publics names (here symbol of function exported by lib)
 REM 		-p 				: option to see publics names
 echo.  ***************** 	     Listage des symboles exportes de la librairie 32 bits			*****************
@@ -120,10 +121,10 @@ echo.  *****************             Edition des liens (linkage) de la DLL      
 link /NOLOGO /SUBSYSTEM:WINDOWS /EXETYPE:NT /IMPDEF:dll_core_2.def /IMPLIB:dll_core.lib dll_core.obj, dll_core.dll, , kernel32 user32.lib, src\dll_core.def 
 REM    (mandatory, because option /IMPLIB used by linker don't generate correct library file)
 REM 	See the result of generate def file by linker
+echo.  ***************** 	           Affichage du def file genere par le linker			    *****************
 type dll_core_2.def
-REM     Use of "implib" utility" because bug with precedent command during linkage : library generate "dll_core.lib" seems in wrong format !!!
-REM 	The message during next generation of main test program of DLL is : "dll_core.lib : Error 30: Unexpected End of File"
-implib /system dll_core.lib dll_core.dll
+REM     NOT MANDATORY : Linker generate good library with command line /IMPLIB=xxxxxxxx.lib
+REM implib /system dll_core.lib dll_core.dll
 REM    Use of tool libunres to see publics names (here symbol of function exported by lib)
 REM 		-p 				: option to see publics names
 echo.  ***************** 	         Listage des symboles exportes de la librairie 32 bits	          *****************
